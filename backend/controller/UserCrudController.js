@@ -58,4 +58,29 @@ const getAllUsers = async (request, response) => {
   }
 };
 
-module.exports = { createUser, getAllUsers };
+// find one user
+const findUser = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const user = await UserCrudModel.findById(id);
+    if (user) {
+      return response.status(200).json({
+        message: "user is found",
+        data: user,
+      });
+    } else {
+      return response.status(404).json({
+        message: "user is not found",
+      });
+    }
+  } catch (error) {
+    if (error) {
+      return response.status(404).json({
+        message: "error",
+        error: error.message,
+      });
+    }
+  }
+};
+
+module.exports = { createUser, getAllUsers, findUser };
