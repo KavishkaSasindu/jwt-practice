@@ -52,4 +52,45 @@ const signUpUser = async (request, response) => {
   }
 };
 
-module.exports = { signUpUser };
+// signIn
+const signInUser = async (request, response) => {
+  const { email, password } = request.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+    if (user) {
+      // compare the hashedPassword and password
+      const auth = await bcrypt.compare(password, user.password);
+      if (auth) {
+        // generate a token and put into cookie
+        const token = createToken(user._id);
+        const cookie = response.cookie("jwt", token, {
+          maxAge: 1000 * 60 * 60 * 24,
+        });
+        console.log(cookie);
+        return response.status(200).json({
+          message: "user found",
+          data: user.email,
+          jwt: token,
+        });
+      } else {
+        return response.status(404).json({
+          message: "invalid credential",
+        });
+      }
+    } else {
+      return response.status(404).json({
+        message: "user not found in database",
+      });
+    }
+  } catch (error) {
+    if (error) {
+      return response.status(400).json({
+        message: "Error",
+        error: error.message,
+      });
+    }
+  }
+};
+
+module.exports = { signUpUser, signInUser };
