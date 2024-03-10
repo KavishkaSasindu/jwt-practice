@@ -112,4 +112,26 @@ const updateUser = async (request, response) => {
   }
 };
 
-module.exports = { createUser, getAllUsers, findUser, updateUser };
+// delete userData
+const deleteData = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const deleteUser = await UserCrudModel.findByIdAndDelete(id);
+    if (deleteUser) {
+      return response.status(200).json({
+        message: "user deleted",
+      });
+    } else {
+      return response.status(404).json({
+        message: "user is not deleted",
+      });
+    }
+  } catch (error) {
+    return response.status(404).json({
+      message: "error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { createUser, getAllUsers, findUser, updateUser, deleteData };
