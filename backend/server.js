@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
+const router = require("./routes/userAuthRoutes");
 
 const app = express();
 
@@ -21,3 +22,6 @@ mongoose
   .catch((error) => {
     console.log(error.message);
   });
+
+//   routes
+app.use(router);
