@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-const router = require("./routes/userAuthRoutes");
+const authRouter = require("./routes/userAuthRoutes");
+const userCrudRouter = require("./routes/UserCrudRoutes");
 
 const app = express();
 
@@ -24,4 +25,5 @@ mongoose
   });
 
 //   routes
-app.use(router);
+app.use(authRouter);
+app.use(userCrudRouter);
