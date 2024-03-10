@@ -83,4 +83,33 @@ const findUser = async (request, response) => {
   }
 };
 
-module.exports = { createUser, getAllUsers, findUser };
+// update user
+const updateUser = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const user = await UserCrudModel.findByIdAndUpdate(id, request.body);
+    if (user) {
+      const updatedUser = await UserCrudModel.findById(id);
+      if (updateUser) {
+        return response.status(200).json({
+          message: "updated user data",
+          data: updatedUser,
+        });
+      }
+      return response.status(201).json({
+        message: "user is updated",
+      });
+    } else {
+      return response.status(400).json({
+        message: "user not updated",
+      });
+    }
+  } catch (error) {
+    return response.status(404).json({
+      message: "error",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { createUser, getAllUsers, findUser, updateUser };
