@@ -29,6 +29,7 @@ const signUpUser = async (request, response) => {
       // store token in a cookie
       const cookie = response.cookie("jwt", token, {
         maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
       });
       console.log(cookie);
       return response.status(201).json({
@@ -71,7 +72,7 @@ const signInUser = async (request, response) => {
         return response.status(200).json({
           message: "user found",
           data: user.email,
-          jwt: token,
+          token: token,
         });
       } else {
         return response.status(404).json({
