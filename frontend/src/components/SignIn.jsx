@@ -1,8 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const [getData, setData] = useState({
     email: "",
     password: "",
@@ -18,14 +20,17 @@ const SignIn = () => {
   const handleData = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/signIn",
-        getData
-      );
+      const response = await fetch("http://localhost:3000/signIn", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer YOUR_TOKEN_HERE", // Replace YOUR_TOKEN_HERE with your actual token
+        },
+        body: JSON.stringify(getData),
+      });
       if (response.status === 200) {
-        console.log(response.data.token);
-        const token = response.data.token;
-        localStorage.setItem("jwt", token);
+        localStorage.setItem("jwt", response.data.token);
+        navigate("/home");
         // localStorage.setItem("access_token", response.data.token);
         console.log("Verified credentials");
       }

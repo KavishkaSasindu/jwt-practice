@@ -12,36 +12,44 @@ const signUpUser = async (request, response) => {
   const { username, email, password } = request.body;
 
   try {
-    // hashed password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const alreadyUser = await UserModel.findOne({ email });
 
-    // save user in db
-    const user = await UserModel.create({
-      username,
-      email,
-      password: hashedPassword,
-    });
-    if (user) {
-      // generate a token
-      const token = createToken(user._id);
-
-      // store token in a cookie
-      const cookie = response.cookie("jwt", token, {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-      });
-      console.log(cookie);
-      return response.status(201).json({
-        message: "User created success",
-        data: user,
-        token: token,
+    if (alreadyUser) {
+      return response.status(404).json({
+        message: "user already in db",
       });
     } else {
-      return response.status(400).json({
-        message: "User not created",
-        error: error.message,
+      // hashed password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      // save user in db
+      const user = await UserModel.create({
+        username,
+        email,
+        password: hashedPassword,
       });
+      if (user) {
+        // generate a token
+        const token = createToken(user._id);
+
+        // store token in a cookie
+        const cookie = response.cookie("jwt", token, {
+          maxAge: 1000 * 60 * 60 * 24,
+          httpOnly: true,
+        });
+        console.log(cookie);
+        return response.status(201).json({
+          message: "User created success",
+          data: user,
+          token: token,
+        });
+      } else {
+        return response.status(400).json({
+          message: "User not created",
+          error: error.message,
+        });
+      }
     }
   } catch (error) {
     if (error) {
@@ -65,10 +73,11 @@ const signInUser = async (request, response) => {
       if (auth) {
         // generate a token and put into cookie
         const token = createToken(user._id);
-        const cookie = await response.cookie("jwt", token, {
-          maxAge: 1000 * 60 * 60 * 24,
-        });
-        console.log(cookie);
+        // const cookie = await response.cookie("jwt", token, {
+        //   maxAge: 1000 * 60 * 60 * 24,
+        //   httpOnly: true,
+        // });
+        // console.log(cookie);
         return response.status(200).json({
           message: "user found",
           data: user.email,
