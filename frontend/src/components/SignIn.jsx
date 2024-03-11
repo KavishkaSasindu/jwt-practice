@@ -19,16 +19,17 @@ const SignIn = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://127.0.0.1:3000/signIn",
+        "http://localhost:3000/signIn",
         getData
       );
+      if (response.status === 200) {
+        console.log(response.data.token);
+        const token = response.data.token;
+        localStorage.setItem("jwt", token);
+        // localStorage.setItem("access_token", response.data.token);
+        console.log("Verified credentials");
+      }
       console.log(response);
-      //   if (response.status === 200) {
-      //     localStorage.setItem("access_token", response.data.token);
-      //     console.log("successfully logged in");
-      //   } else {
-      //     console.log("Error:", response.data.message);
-      //   }
     } catch (error) {
       console.log("Error:", error.message);
     }

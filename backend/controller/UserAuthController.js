@@ -65,7 +65,7 @@ const signInUser = async (request, response) => {
       if (auth) {
         // generate a token and put into cookie
         const token = createToken(user._id);
-        const cookie = response.cookie("jwt", token, {
+        const cookie = await response.cookie("jwt", token, {
           maxAge: 1000 * 60 * 60 * 24,
         });
         console.log(cookie);

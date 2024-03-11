@@ -8,7 +8,11 @@ const userCrudRouter = require("./routes/UserCrudRoutes");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 // server config and db connection
